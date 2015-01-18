@@ -1,0 +1,5 @@
+config.php
+public_html/products/
+.DS_Store
+public_html/style.mini.*
+public_html/js.mini.*

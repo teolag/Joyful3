@@ -1,0 +1,12 @@
+RewriteEngine on
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^api/(.*)$ api.php?action=$1 [QSA]
+
+RewriteRule ^cart index.php?page=cart
+RewriteRule ^category/(.*)$ index.php?category=$1
+RewriteRule ^product/(.*)$ index.php?productId=$1
+
