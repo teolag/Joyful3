@@ -10,7 +10,7 @@ if(empty($action)) {
 } else {
 
 
-	require "/var/www/DatabasePDO/DatabasePDO.php";
+	require "/git/DatabasePDO/DatabasePDO.php";
 	require "../config.php";
 	require "../includes/Customer.php";
 	require "../includes/Cart.php";

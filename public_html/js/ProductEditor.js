@@ -1,6 +1,6 @@
 var ProductEditor = (function() {
 
-	var box, boxTitle, form, imageList,
+	var box, boxTitle, form, imageList,f
 
 	init = function() {
 		box = document.getElementById("product");
@@ -14,7 +14,6 @@ var ProductEditor = (function() {
 
 		imageList = box.querySelector(".images");
 
-		createNew();
 	},
 
 	clear = function() {
@@ -24,14 +23,21 @@ var ProductEditor = (function() {
 	},
 
 	createNew = function() {
-		clear();
-		boxTitle.textContent = "Ny produkt";
+		var name = prompt("Namn på den nya produkten?");
+		if(!name) return;
+
+		Ajax.post2JSON("/api/save-product", {name:name, price:0}, function(data) {
+			open(data.id);
+		});
+
 	},
 
 	open = function(productId) {
 		clear();
 		var product = getProductById(productId);
+
 		update(product);
+		box.classList.remove("hidden");
 		getProductImages(productId);
 	},
 
@@ -73,52 +79,71 @@ var ProductEditor = (function() {
 
 		for(var i=0; i<data.images.length; i++) {
 			var image = data.images[i];
+			var uri = "/products/" + image.product_id + "/" +image.product_image_id +"_"+image.name;
 			console.log("image", image);
 
-			var li = document.createElement("li");
 
 			var img = new Image();
-			img.src="/products/" + image.product_id + "/" +image.product_image_id +"_"+image.name;
-			img.height=80;
-			li.appendChild(img);
+			img.src= "/image.php?uri="+escape(uri)+"&type=productThumb";
 
-			imageList.appendChild(li);
+			imageList.appendChild(img);
 		}
 
 
 	},
 
 	uploadImages = function(e) {
-		var productId = form.elements['product_id'].value;
-
+		var fileQueue = [];
 		for(var i=0; i<e.target.files.length; i++) {
-			var file = e.target.files[i];
-			var xhr = new XMLHttpRequest();
-			xhr.upload.addEventListener('progress', function(e){
-				console.log((100*e.loaded/e.total)+'%');
-			}, false);
-			xhr.responseType = 'json';
-			xhr.onload = imageUploaded;
-			xhr.open("POST", "/api/upload-product-image", true);
-			var data = new FormData();
-			data.append('productId', productId);
-			data.append('file', file);
-			xhr.send(data);
-
-			console.log("upload file", file);
+			fileQueue.push(e.target.files[i]);
 		}
-	},
+		console.log("fileQueue", fileQueue);
+		e.target.value = "";
 
-	imageUploaded = function(e) {
-		var data = e.target.response;
-		console.log("Image uploaded", data);
+		handleNextInQueue();
 
-		CropTool.open(data.url, imageCropped);
-	},
 
-	imageCropped = function(data) {
+		function handleNextInQueue() {
+			if(fileQueue.length===0) return;
+			var file = fileQueue.shift();
+			var reader = new FileReader();
+			reader.addEventListener("load", fileRead, false);
+			reader.readAsDataURL(file);
+
+			function fileRead(e) {
+				CropTool.open({
+					dataUrl: reader.result,
+					onCrop: cropDone,
+					onCancel: cropAborted
+				});
+			}
+
+			function cropDone(data) {
+				console.log("send, crop & resize", data);
+
+				var formData = new FormData();
+				formData.append('productId', form.elements['product_id'].value);
+				formData.append('file', file);
+				formData.append('left', data.left);
+				formData.append('top', data.top);
+				formData.append('width', data.width);
+				formData.append('height', data.height);
+				Ajax.post2JSON("/api/upload-product-image", formData, uploadDone);
+				handleNextInQueue();
+			}
+
+			function cropAborted(data) {
+				console.log("cropAbort", data);
+				handleNextInQueue();
+			}
+
+			function uploadDone(data) {
+				console.log("UploadDone", data)
+			}
+		};
 
 	};
+
 
 
 

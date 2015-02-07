@@ -19,8 +19,16 @@ var ProductList = (function() {
 	},
 
 	clickHandler = function(e) {
-		var productId = parseInt(e.target.dataset.id);
+		var item = e.target;
+		var productId = parseInt(item.dataset.id);
 		if(!productId) return;
+
+		var selected = list.querySelectorAll(".selected");
+		for(var i=0; i<selected.length; i++) {
+			selected[i].classList.remove("selected");
+		}
+
+		item.classList.add("selected");
 
 		console.log("clicked productId:", productId);
 		ProductEditor.open(productId);

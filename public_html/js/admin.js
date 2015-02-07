@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	var btnNewProduct = document.getElementById("btnNewProduct");
 	btnNewProduct.addEventListener("click", ProductEditor.createNew, false);
 
+	var btnNewCategory = document.getElementById("btnNewCategory");
+	btnNewCategory.addEventListener("click", CategoryEditor.createNew, false);
+
 	var btnLogout = document.getElementById("btnLogout");
 	btnLogout.addEventListener("click", logout, false);
 
@@ -14,15 +17,12 @@ document.addEventListener("DOMContentLoaded", function() {
 	sections = document.getElementsByTagName("section");
 	menuItems = document.getElementsByTagName("menu")[0].children;
 
+	CategoryList.init();
+	CategoryEditor.init();
 	ProductList.init();
 	ProductEditor.init();
 	showSection("products");
-
-	CropTool.open("/products/1/8_114_1408.JPG", 2, cropCallback);
 });
-
-
-
 
 
 function navClick(e) {
@@ -53,13 +53,9 @@ function showSection(section) {
 
 }
 
-
 function logout() {
 	window.location.href = "/admin.php?logout";
 }
-
-
-
 
 function getProductById(productId) {
 	var product;
@@ -78,11 +74,6 @@ function updateProduct(product) {
 	}
 }
 
-
-
 function cropCallback(data) {
 	console.log("Crop callback", data);
 }
-
-
-

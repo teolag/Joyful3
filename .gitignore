@@ -1,4 +1,5 @@
 config.php
+public_html/thumbs/
 public_html/products/
 .DS_Store
 public_html/style.mini.*

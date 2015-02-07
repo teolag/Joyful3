@@ -5,6 +5,7 @@ function getCategories(&$db) {
 	$categories[0] = array("name"=>"root");
 
 	foreach($categories as $id=>$c) {
+		$categories[$id]['id'] = $id;
 		if(isset($c['parent'])) {
 			$categories[$c['parent']]['children'][] = $id;
 		}
@@ -78,10 +79,20 @@ function uploadProductImage(&$db, $productFolder, &$response) {
 	$uri = $productFolder.$productId."/".$productImageId."_".$file['name'];
 	move_uploaded_file($file["tmp_name"], $uri);
 
+	$input = $uri;
+	$output = $uri;
+	$width = intval($_REQUEST['width']);
+	$height = intval($_REQUEST['height']);
+	$top = intval($_REQUEST['top']);
+	$left = intval($_REQUEST['left']);
+	$maxWidth = 500;
+	$maxHeight = 500;
+	$command = "convert '{$input}' -crop {$width}x{$height}+{$left}+{$top} -resize {$maxWidth}x{$maxHeight}\> '{$output}'";
+	exec($command);
+
 	$response['status'] = 100;
-	$response['message'] = "image was uploaded";
+	$response['message'] = "image was uploaded cropped and resized";
 	$response['url'] = $url;
-	$response['uri'] = $uri;
 
 }
 

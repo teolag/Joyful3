@@ -5,7 +5,7 @@ $admin = isset($_SESSION['admin']);
 
 require "../config.php";
 
-require "/var/www/DatabasePDO/DatabasePDO.php";
+require "/git/DatabasePDO/DatabasePDO.php";
 $db = new DatabasePDO($config['db']['server'], $config['db']['username'], $config['db']['password'], $config['db']['name']);
 
 require "../includes/ProductHandler.php";

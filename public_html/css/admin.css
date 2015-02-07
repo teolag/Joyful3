@@ -1,5 +1,7 @@
 body {
 	background-color: #666;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
 }
 
 
@@ -27,9 +29,41 @@ section {
 }
 
 section>aside {
-	width: 200px;
+	width: 220px;
+	margin-right: 2em;
 }
 
+#productList {
+	padding: 0;
+}
+#productList li {
+	list-style-type: none;
+	cursor: pointer;
+	padding: 0.2em 0.5em;
+}
+#productList li:hover {
+	background-color: #f1f1f1;
+}
+#productList li.selected {
+	background-color: #bada55;
+}
+
+
+#product {
+	flex: 1;
+}
+
+.images {
+	display: flex;
+	padding: 0;
+	flex-wrap: wrap;
+}
+.images img {
+	margin: 0 15px 15px 0;
+	border: 4px solid rgb(255, 255, 255);
+	box-shadow: 0 1px 11px rgba(0,0,0,0.3);
+	border-radius: 7px;
+}
 
 
 .hidden {
